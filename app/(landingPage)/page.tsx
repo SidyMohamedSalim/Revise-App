@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { getAuthSession } from "@/lib/authConfig";
 import { redirect } from "next/navigation";
+import LoginButton from "@/components/auth/LoginButton";
 
 export default async function Page() {
   const session = await getAuthSession();
@@ -37,9 +38,7 @@ export default async function Page() {
               votre compréhension du sujet.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Link href={"/quizz"} className={cn(buttonVariants())}>
-                Commencer
-              </Link>
+              <LoginButton />
               {!session?.user.id && (
                 <Button
                   variant={"link"}

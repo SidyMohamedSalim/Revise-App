@@ -11,6 +11,7 @@ import React from "react";
 import { signIn } from "next-auth/react";
 import AvatarProfile from "@/components/ui/AvatarProfile";
 import { Gem } from "lucide-react";
+import LoginButton from "@/components/auth/LoginButton";
 
 const Header = ({
   userId,
@@ -69,13 +70,7 @@ const Header = ({
               <AvatarProfile name={userName} image={userImage} />
             </div>
           ) : (
-            <Button
-              onClick={async (e) => {
-                await signIn();
-              }}
-            >
-              Connexion
-            </Button>
+            <LoginButton />
           )}
         </div>
       </CenterLayout>

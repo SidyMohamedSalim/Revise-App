@@ -36,7 +36,6 @@ const page = async () => {
           />
           <Card title="Historiques" value={1600} type="old" />
         </div>
-
         {/* card reviews */}
         <ReviewsCard />
       </CenterLayout>
