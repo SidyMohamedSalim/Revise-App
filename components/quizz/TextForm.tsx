@@ -51,6 +51,7 @@ const TextForm = ({ countMax }: { countMax: number }) => {
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
     const user = String(formData.get("user"));
@@ -77,7 +78,6 @@ const TextForm = ({ countMax }: { countMax: number }) => {
   return (
     <form
       onSubmit={async (e) => {
-        e.preventDefault();
         await handleSubmit(e).then(async () => {
           await decrementNumberAction();
         });
