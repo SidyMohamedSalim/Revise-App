@@ -7,10 +7,7 @@ import React from "react";
 
 const page = async () => {
   const session = await getAuthSession();
-  if (!session?.user.id) {
-    redirect("/");
-  }
-  const countUserGameQuizz = await userCountQuizz(session.user.id ?? "");
+  const countUserGameQuizz = await userCountQuizz(session?.user.id ?? "");
   return (
     <div>
       <CenterLayout>
