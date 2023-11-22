@@ -34,21 +34,21 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   //   onError: () => {},
   // });
 
-  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.currentTarget);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
-  //   const user = String(formData.get("user"));
+    const user = String(formData.get("user"));
 
-  //   const TexteUser = {
-  //     role: "user",
-  //     content: `${user}`,
-  //   } satisfies ChatCompletionMessageParam;
+    const TexteUser = {
+      role: "user",
+      content: `${user}`,
+    } satisfies ChatCompletionMessageParam;
 
-  //   if (countMax > 0) {
-  //     await GenereQuestionsWithAi.mutate({ TexteUser });
-  //   }
-  // };
+    if (countMax > 0) {
+      // await GenereQuestionsWithAi.mutate({ TexteUser });
+    }
+  };
 
   // if (GenereQuestionsWithAi.status === "success") {
   //   const data = GenereQuestionsWithAi.data?.choices[0].message.content;
