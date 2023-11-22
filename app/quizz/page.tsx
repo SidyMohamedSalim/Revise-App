@@ -10,7 +10,7 @@ const page = async () => {
   return (
     <div>
       <CenterLayout>
-        <GenerateAiQuestion countMax={countUserGameQuizz?.usageMax ?? 0} />
+        {/* <GenerateAiQuestion countMax={countUserGameQuizz?.usageMax ?? 0} /> */}
       </CenterLayout>
     </div>
   );

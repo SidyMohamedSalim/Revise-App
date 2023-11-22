@@ -6,12 +6,12 @@ import { Button } from "../ui/button";
 import { ChatCompletionMessageParam } from "openai/resources";
 import OpenAI from "openai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { QuizQuestion, quizData } from "@/lib/data";
+import { QuizQuestion } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import { UseQUizzStore } from "@/src/zustand/store";
 import clsx from "clsx";
 import { decrementNumberAction } from "@/app/actions/quizz.action";
-import { env } from "@/src/env";
+import { genereDataAiQuery } from "@/src/data/queryClient.ts/openAI";
 
 const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const maxLength = 6000;
@@ -19,28 +19,12 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const openai = new OpenAI({
-    apiKey: env.NEXT_PUBLIC_OPENAI_KEY,
-    dangerouslyAllowBrowser: true,
-  });
 
-  const mutation = useMutation({
-    mutationFn: ({ TexteUser }: { TexteUser: ChatCompletionMessageParam }) =>
-      openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `Créez une JSON avec 3 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;explication:string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions. NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau et aussi une explication(detail) de la vrai reponse. Voici le texte donner par le user`,
-          },
-          TexteUser,
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
+  const GenereQuestionsWithAi = useMutation({
+    mutationFn: genereDataAiQuery,
     onSettled: async () => {
       queryClient.cancelQueries();
-      const data = mutation.data?.choices[0].message.content;
+      const data = GenereQuestionsWithAi.data?.choices[0].message.content;
       if (data) {
         const parseData: QuizQuestion[] = JSON.parse(data);
         updateQuizzData(parseData);
@@ -63,12 +47,12 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     } satisfies ChatCompletionMessageParam;
 
     if (countMax > 0) {
-      await mutation.mutate({ TexteUser });
+      await GenereQuestionsWithAi.mutate({ TexteUser });
     }
   };
 
-  if (mutation.status === "success") {
-    const data = mutation.data?.choices[0].message.content;
+  if (GenereQuestionsWithAi.status === "success") {
+    const data = GenereQuestionsWithAi.data?.choices[0].message.content;
     if (data) {
       updateQuizzData(JSON.parse(data));
 
@@ -88,13 +72,13 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
         Generer un examen à partir d&apos;un texte donné
       </h3>
 
-      {countMax <= 0 && !mutation.isPending && (
+      {countMax <= 0 && !GenereQuestionsWithAi.isPending && (
         <p className="text-red-500 font-bold">
           Les nombres de possiblités sont terminés !!
         </p>
       )}
 
-      {mutation.isPending ? (
+      {GenereQuestionsWithAi.isPending ? (
         <div className="w-full flex justify-center items-center h-36">
           <div className="flex flex-col justify-center items-center">
             <p>Le systeme est entrain de generer...</p>
@@ -125,12 +109,14 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
           </div>
           <Button
             disabled={
-              mutation.isPending || textAreaCount > maxLength || countMax <= 0
+              GenereQuestionsWithAi.isPending ||
+              textAreaCount > maxLength ||
+              countMax <= 0
             }
             className="bg-green-500"
             type="submit"
           >
-            {mutation.isPending ? (
+            {GenereQuestionsWithAi.isPending ? (
               <p>le systeme est en train de reflechir</p>
             ) : (
               "Generer"

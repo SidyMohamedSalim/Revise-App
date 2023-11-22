@@ -26,7 +26,7 @@ export function QuizzOptionsForm({
     <div>
       {question?.options.map((el, index) => (
         <Option
-          key={el}
+          key={`${el}-${index}`}
           isSubmit={isSubmit}
           correctAnswer={question.correctAnswer}
           id={ids[index]}
