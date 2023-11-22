@@ -1,14 +1,11 @@
 "use client";
-import { QuizQuestion } from "@/lib/data";
 import React, { useState } from "react";
-import { QuizzForm, optionType } from "./QuizzForm";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { Progress } from "../ui/progress";
 import { UseQUizzStore } from "@/src/zustand/store";
-import { decrementNumberAction } from "@/app/actions/quizz.action";
 import { Accordion, AccordionContent, AccordionTrigger } from "../ui/accordion";
 import { AccordionItem } from "@radix-ui/react-accordion";
+import { QuizzOptionsForm, optionType } from "./QuizzOptionsForm";
 
 export type QuizzProgressType = {
   currentIndex: number;
@@ -45,11 +42,9 @@ const StartQuizz = () => {
     e.preventDefault();
 
     if (option.id === undefined) {
-      // setNotSelectedOption(true);
       return;
     }
 
-    // setNotSelectedOption(false);
     setIsSubmit(true);
 
     setTimeout(() => {
@@ -108,7 +103,7 @@ const StartQuizz = () => {
         </div>
         <h3 className="font-bold text-xl my-6">{CurrentQuestion?.question}</h3>
 
-        <QuizzForm
+        <QuizzOptionsForm
           option={option}
           setOption={setOption}
           isSubmit={isSubmit}
