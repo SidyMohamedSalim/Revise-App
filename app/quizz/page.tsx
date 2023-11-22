@@ -2,7 +2,6 @@ import GenerateAiQuestion from "@/components/quizz/GenerateAiQuestion";
 import CenterLayout from "@/components/layout/CenterLayout";
 import { getAuthSession } from "@/lib/authConfig";
 import { userCountQuizz } from "@/lib/data";
-import { redirect } from "next/navigation";
 import React from "react";
 
 const page = async () => {

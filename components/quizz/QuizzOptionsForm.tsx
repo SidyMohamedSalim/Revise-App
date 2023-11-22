@@ -10,7 +10,7 @@ export type optionType = {
   id: "choiceA" | "choiceB" | "choiceC" | "choiceD" | undefined;
 };
 
-export function QuizzForm({
+export function QuizzOptionsForm({
   question,
   isSubmit = false,
   option,
