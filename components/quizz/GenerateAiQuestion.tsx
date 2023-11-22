@@ -20,11 +20,11 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
 
   const GenereQuestionsWithAi = useMutation({
     mutationFn: genereDataAiQuery,
-    onSuccess: async () => {
-      const data = GenereQuestionsWithAi.data?.choices[0].message.content;
+    onSuccess: async (response) => {
+      const data = response.choices[0].message.content;
       if (data) {
         const parseData: QuizQuestion[] = JSON.parse(data);
-        // updateQuizzData(parseData);
+        updateQuizzData(parseData);
       }
       router.refresh();
     },
@@ -46,14 +46,14 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     }
   };
 
-  // if (GenereQuestionsWithAi.status === "success") {
-  //   const data = GenereQuestionsWithAi.data?.choices[0].message.content;
-  //   if (data) {
-  //     updateQuizzData(JSON.parse(data));
+  if (GenereQuestionsWithAi.status === "success") {
+    const data = GenereQuestionsWithAi.data?.choices[0].message.content;
+    if (data) {
+      updateQuizzData(JSON.parse(data));
 
-  //     router.push("/quizz/game");
-  //   }
-  // }
+      router.push("/quizz/game");
+    }
+  }
 
   return (
     <form
@@ -67,11 +67,11 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
         Generer un examen à partir d&apos;un texte donné
       </h3>
 
-      {/* {countMax <= 0 && !GenereQuestionsWithAi.isPending && (
+      {countMax <= 0 && !GenereQuestionsWithAi.isPending && (
         <p className="text-red-500 font-bold">
           Les nombres de possiblités sont terminés !!
         </p>
-      )} */}
+      )}
 
       {GenereQuestionsWithAi.isPending ? (
         <div className="w-full flex justify-center items-center h-36">
@@ -103,11 +103,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
             </p>
           </div>
           <Button
-            disabled={
-              GenereQuestionsWithAi.isPending ||
-              textAreaCount > maxLength ||
-              countMax <= 0
-            }
+            disabled={textAreaCount > maxLength || countMax <= 0}
             className="bg-green-500"
             type="submit"
           >
