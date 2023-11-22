@@ -27,7 +27,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const mutation = useMutation({
     mutationFn: ({ TexteUser }: { TexteUser: ChatCompletionMessageParam }) =>
       openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages: [TexteUser],
         temperature: 0.7,
         max_tokens: 4000,
