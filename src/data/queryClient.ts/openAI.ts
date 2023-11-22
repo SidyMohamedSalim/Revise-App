@@ -7,12 +7,12 @@ export const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export const genereDataAiQuery = ({
+export const genereDataAiQuery = async ({
   TexteUser,
 }: {
   TexteUser: ChatCompletionMessageParam;
-}) =>
-  openai.chat.completions.create({
+}) => {
+  return openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     messages: [
       {
@@ -24,3 +24,4 @@ export const genereDataAiQuery = ({
     temperature: 0.7,
     max_tokens: 1000,
   });
+};

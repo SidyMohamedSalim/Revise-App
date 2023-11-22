@@ -46,14 +46,14 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     }
   };
 
-  if (GenereQuestionsWithAi.status === "success") {
-    const data = GenereQuestionsWithAi.data?.choices[0].message.content;
-    if (data) {
-      // updateQuizzData(JSON.parse(data));
+  // if (GenereQuestionsWithAi.status === "success") {
+  //   const data = GenereQuestionsWithAi.data?.choices[0].message.content;
+  //   if (data) {
+  //     updateQuizzData(JSON.parse(data));
 
-      router.push("/quizz/game");
-    }
-  }
+  //     router.push("/quizz/game");
+  //   }
+  // }
 
   return (
     <form
@@ -111,11 +111,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
             className="bg-green-500"
             type="submit"
           >
-            {GenereQuestionsWithAi.isPending ? (
-              <p>le systeme est en train de reflechir</p>
-            ) : (
-              "Generer"
-            )}
+            Generer
           </Button>
         </fieldset>
       )}
