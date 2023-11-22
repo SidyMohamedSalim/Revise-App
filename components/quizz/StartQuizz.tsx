@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { Progress } from "../ui/progress";
 import { UseQUizzStore } from "@/src/zustand/store";
 import { decrementNumberAction } from "@/app/actions/quizz.action";
+import { Accordion, AccordionContent, AccordionTrigger } from "../ui/accordion";
+import { AccordionItem } from "@radix-ui/react-accordion";
 
 export type QuizzProgressType = {
   currentIndex: number;
@@ -113,6 +115,12 @@ const StartQuizz = () => {
           question={CurrentQuestion}
         />
 
+        <p className="my-4 px-6 italic">
+          <DetailsQuestion
+            content={CurrentQuestion?.correctAnswer ?? ""}
+            detail={CurrentQuestion?.explication}
+          />
+        </p>
         {/* actions */}
 
         <div className="flex gap-3 justify-end items-center">
@@ -136,3 +144,30 @@ const StartQuizz = () => {
 };
 
 export default StartQuizz;
+
+const DetailsQuestion = ({
+  title = "Voir la solution et les details",
+  content,
+  detail,
+}: {
+  title?: string;
+  content: string;
+  detail?: string;
+}) => {
+  return (
+    <Accordion type="single" collapsible className="w-full">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>{title}</AccordionTrigger>
+        <AccordionContent>
+          <p className="my-2">
+            <span className="font-bold text-base">Solution : </span>
+            {content}
+          </p>
+          <p className="text-sm">
+            <span className="font-bold text-base">Details :</span> {detail}
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};

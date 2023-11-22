@@ -5,6 +5,7 @@ export const QuestionScheme = z.object({
   question: z.string(),
   options: z.string().array(),
   correctAnswer: z.string(),
+  explication: z.string().optional(),
 });
 
 export type QuizQuestion = z.infer<typeof QuestionScheme>;

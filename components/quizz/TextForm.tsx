@@ -3,10 +3,9 @@
 import React, { FormEvent, useState } from "react";
 import { TextArea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { CreateChatCompletionRequestMessage } from "openai/resources";
+import { ChatCompletionMessageParam } from "openai/resources";
 import OpenAI from "openai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "../ui/loader";
 import { QuizQuestion, quizData } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import { UseQUizzStore } from "@/src/zustand/store";
@@ -26,16 +25,12 @@ const TextForm = ({ countMax }: { countMax: number }) => {
   });
 
   const mutation = useMutation({
-    mutationFn: ({
-      TexteUser,
-    }: {
-      TexteUser: CreateChatCompletionRequestMessage;
-    }) =>
+    mutationFn: ({ TexteUser }: { TexteUser: ChatCompletionMessageParam }) =>
       openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [TexteUser],
         temperature: 0.7,
-        max_tokens: 500,
+        max_tokens: 2000,
       }),
     onSettled: async () => {
       queryClient.cancelQueries();
@@ -58,8 +53,8 @@ const TextForm = ({ countMax }: { countMax: number }) => {
 
     const TexteUser = {
       role: "user",
-      content: `Créez une JSON avec 3 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions.NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau. Voici le texte : ${user}`,
-    } satisfies CreateChatCompletionRequestMessage;
+      content: `Créez une JSON avec 2 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;explication:string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions. NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau et aussi une explication(detail) de la vrai reponse. Voici le texte : ${user}`,
+    } satisfies ChatCompletionMessageParam;
 
     if (countMax > 0) {
       await mutation.mutate({ TexteUser });
