@@ -28,9 +28,15 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     mutationFn: ({ TexteUser }: { TexteUser: ChatCompletionMessageParam }) =>
       openai.chat.completions.create({
         model: "gpt-3.5-turbo",
-        messages: [TexteUser],
+        messages: [
+          {
+            role: "system",
+            content: `Créez une JSON avec 3 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;explication:string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions. NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau et aussi une explication(detail) de la vrai reponse. Voici le texte donner par le user`,
+          },
+          TexteUser,
+        ],
         temperature: 0.7,
-        max_tokens: 4000,
+        max_tokens: 1000,
       }),
     onSettled: async () => {
       queryClient.cancelQueries();
@@ -53,7 +59,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
 
     const TexteUser = {
       role: "user",
-      content: `Créez une JSON avec 4 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;explication:string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions. NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau et aussi une explication(detail) de la vrai reponse. Voici le texte : ${user}`,
+      content: `${user}`,
     } satisfies ChatCompletionMessageParam;
 
     if (countMax > 0) {
@@ -88,37 +94,50 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
         </p>
       )}
 
-      <fieldset name="user" className="flex items-end gap-2 flex-col ">
-        <div className="w-full">
-          <TextArea
-            disabled={countMax <= 0}
-            max={maxLength}
-            count={textAreaCount}
-            onChange={(e) => {
-              e.preventDefault();
-              setTextAreaCount(e.currentTarget.value.length);
-            }}
-            name="user"
-            label="Entrez le texte"
-          />
-          <p
-            className={clsx("text-end my-4", {
-              "text-red-400": textAreaCount > maxLength,
-            })}
-          >
-            {textAreaCount} / {maxLength}
-          </p>
+      {mutation.isPending ? (
+        <div className="w-full flex justify-center items-center h-36">
+          <div className="flex flex-col justify-center items-center">
+            <p>Le systeme est entrain de generer...</p>
+            <span className="loading loading-infinity loading-lg"></span>
+          </div>
         </div>
-        <Button
-          disabled={
-            mutation.isPending || textAreaCount > maxLength || countMax <= 0
-          }
-          className="bg-green-500"
-          type="submit"
-        >
-          {mutation.isPending ? <p>Creation...</p> : "Generer"}
-        </Button>
-      </fieldset>
+      ) : (
+        <fieldset name="user" className="flex items-end gap-2 flex-col ">
+          <div className="w-full">
+            <TextArea
+              disabled={countMax <= 0}
+              max={maxLength}
+              count={textAreaCount}
+              onChange={(e) => {
+                e.preventDefault();
+                setTextAreaCount(e.currentTarget.value.length);
+              }}
+              name="user"
+              label="Entrez le texte"
+            />
+            <p
+              className={clsx("text-end my-4", {
+                "text-red-400": textAreaCount > maxLength,
+              })}
+            >
+              {textAreaCount} / {maxLength}
+            </p>
+          </div>
+          <Button
+            disabled={
+              mutation.isPending || textAreaCount > maxLength || countMax <= 0
+            }
+            className="bg-green-500"
+            type="submit"
+          >
+            {mutation.isPending ? (
+              <p>le systeme est en train de reflechir</p>
+            ) : (
+              "Generer"
+            )}
+          </Button>
+        </fieldset>
+      )}
     </form>
   );
 };
