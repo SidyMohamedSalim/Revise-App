@@ -78,7 +78,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
       )} */}
 
       {/* {GenereQuestionsWithAi.isPending ? ( */}
-      {true ? (
+      {false ? (
         <div className="w-full flex justify-center items-center h-36">
           <div className="flex flex-col justify-center items-center">
             <p>Le systeme est entrain de generer...</p>
