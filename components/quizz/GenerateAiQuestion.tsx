@@ -19,20 +19,20 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  // const GenereQuestionsWithAi = useMutation({
-  //   mutationFn: genereDataAiQuery,
-  //   onSettled: async () => {
-  //     queryClient.cancelQueries();
-  //     const data = GenereQuestionsWithAi.data?.choices[0].message.content;
-  //     if (data) {
-  //       const parseData: QuizQuestion[] = JSON.parse(data);
-  //       // updateQuizzData(parseData);
-  //     }
-  //     router.refresh();
-  //   },
+  const GenereQuestionsWithAi = useMutation({
+    mutationFn: genereDataAiQuery,
+    onSettled: async () => {
+      queryClient.cancelQueries();
+      const data = GenereQuestionsWithAi.data?.choices[0].message.content;
+      // if (data) {
+      //   const parseData: QuizQuestion[] = JSON.parse(data);
+      //   // updateQuizzData(parseData);
+      // }
+      router.refresh();
+    },
 
-  //   onError: () => {},
-  // });
+    onError: () => {},
+  });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,7 +46,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     } satisfies ChatCompletionMessageParam;
 
     if (countMax > 0) {
-      // await GenereQuestionsWithAi.mutate({ TexteUser });
+      await GenereQuestionsWithAi.mutate({ TexteUser });
     }
   };
 
@@ -77,8 +77,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
         </p>
       )} */}
 
-      {/* {GenereQuestionsWithAi.isPending ? ( */}
-      {false ? (
+      {GenereQuestionsWithAi.isPending ? (
         <div className="w-full flex justify-center items-center h-36">
           <div className="flex flex-col justify-center items-center">
             <p>Le systeme est entrain de generer...</p>
@@ -109,18 +108,18 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
           </div>
           <Button
             disabled={
-              // GenereQuestionsWithAi.isPending ||
-              textAreaCount > maxLength || countMax <= 0
+              GenereQuestionsWithAi.isPending ||
+              textAreaCount > maxLength ||
+              countMax <= 0
             }
             className="bg-green-500"
             type="submit"
           >
-            {/* {GenereQuestionsWithAi.isPending ? (
+            {GenereQuestionsWithAi.isPending ? (
               <p>le systeme est en train de reflechir</p>
             ) : (
               "Generer"
-            )} */}
-            generer
+            )}
           </Button>
         </fieldset>
       )}
