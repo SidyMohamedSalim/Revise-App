@@ -27,10 +27,10 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const mutation = useMutation({
     mutationFn: ({ TexteUser }: { TexteUser: ChatCompletionMessageParam }) =>
       openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4",
         messages: [TexteUser],
         temperature: 0.7,
-        max_tokens: 2000,
+        max_tokens: 4000,
       }),
     onSettled: async () => {
       queryClient.cancelQueries();
@@ -53,7 +53,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
 
     const TexteUser = {
       role: "user",
-      content: `Créez une JSON avec 2 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;explication:string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions. NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau et aussi une explication(detail) de la vrai reponse. Voici le texte : ${user}`,
+      content: `Créez une JSON avec 4 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;explication:string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions. NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau et aussi une explication(detail) de la vrai reponse. Voici le texte : ${user}`,
     } satisfies ChatCompletionMessageParam;
 
     if (countMax > 0) {

@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { maxTry } from "@/lib/config";
 
 export function Card({
   title,

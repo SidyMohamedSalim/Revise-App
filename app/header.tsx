@@ -27,6 +27,9 @@ const Header = ({
   return (
     <div>
       <CenterLayout className="flex justify-between items-center  max-md:text-xs">
+        {/* <form action="">
+          <Button formAction={updateBilling}>update</Button>
+        </form> */}
         <Link
           href="/"
           className="text-xl max-md:text-sm font-extrabold text-purple-700 flex items-center"
