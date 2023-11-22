@@ -15,23 +15,19 @@ import { genereDataAiQuery } from "@/src/data/queryClient.ts/openAI";
 const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const maxLength = 6000;
   const [textAreaCount, setTextAreaCount] = useState(0);
-  // const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
-  const queryClient = useQueryClient();
+  const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
   const router = useRouter();
 
   const GenereQuestionsWithAi = useMutation({
     mutationFn: genereDataAiQuery,
-    onSettled: async () => {
-      queryClient.cancelQueries();
+    onSuccess: async () => {
       const data = GenereQuestionsWithAi.data?.choices[0].message.content;
-      // if (data) {
-      //   const parseData: QuizQuestion[] = JSON.parse(data);
-      //   // updateQuizzData(parseData);
-      // }
+      if (data) {
+        const parseData: QuizQuestion[] = JSON.parse(data);
+        // updateQuizzData(parseData);
+      }
       router.refresh();
     },
-
-    onError: () => {},
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -50,14 +46,14 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     }
   };
 
-  // if (GenereQuestionsWithAi.status === "success") {
-  //   const data = GenereQuestionsWithAi.data?.choices[0].message.content;
-  //   if (data) {
-  //     updateQuizzData(JSON.parse(data));
+  if (GenereQuestionsWithAi.status === "success") {
+    const data = GenereQuestionsWithAi.data?.choices[0].message.content;
+    if (data) {
+      // updateQuizzData(JSON.parse(data));
 
-  //     router.push("/quizz/game");
-  //   }
-  // }
+      router.push("/quizz/game");
+    }
+  }
 
   return (
     <form
