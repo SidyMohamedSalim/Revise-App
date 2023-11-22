@@ -39,14 +39,13 @@ export function Card({
 
 const invoices = [
   {
-    invoice: "INV001",
+    invoice: "ok  allez",
     paymentStatus:
       "L'interface utilisateur est intuitive et conviviale, facilitant la navigation et l'utilisation de l'application.",
     totalAmount: "$250.00",
     paymentMethod: "Credit Card",
   },
   {
-    invoice: "INV002",
     paymentStatus:
       " L'application propose une large gamme de quiz, couvrant divers sujets et niveaux de difficulté, ce qui la rend adaptée à un large public.",
     totalAmount: "$150.00",
