@@ -1,8 +1,11 @@
+"use client";
+
+import { env } from "@/src/env";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 export const openai = new OpenAI({
-  apiKey: "hello",
+  apiKey: env.NEXT_PUBLIC_OPENAI_KEY,
   dangerouslyAllowBrowser: true,
 });
 
