@@ -1,4 +1,3 @@
-import { env } from "@/src/env";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 
