@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 export const openai = new OpenAI({
-  apiKey: env.NEXT_PUBLIC_OPENAI_KEY,
+  apiKey: "hello",
   dangerouslyAllowBrowser: true,
 });
 
