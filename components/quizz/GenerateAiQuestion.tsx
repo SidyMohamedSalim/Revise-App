@@ -10,16 +10,21 @@ import { useRouter } from "next/navigation";
 import { UseQUizzStore } from "@/src/zustand/store";
 import clsx from "clsx";
 import { decrementNumberAction } from "@/app/actions/quizz.action";
-import { genereDataAiQuery } from "@/src/data/queryClient.ts/openAI";
 
 const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const maxLength = 6000;
   const [textAreaCount, setTextAreaCount] = useState(0);
+
   const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
   const router = useRouter();
 
   const GenereQuestionsWithAi = useMutation({
-    mutationFn: genereDataAiQuery,
+    mutationFn: ({ data }: { data: ChatCompletionMessageParam }) => {
+      return fetch("/api/quizz/", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }).then((res) => res.json());
+    },
     onSuccess: async (response) => {
       const data = response.choices[0].message.content;
       if (data) {
@@ -36,13 +41,13 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
 
     const user = String(formData.get("user"));
 
-    const TexteUser = {
+    const data = {
       role: "user",
       content: `${user}`,
     } satisfies ChatCompletionMessageParam;
 
     if (countMax > 0) {
-      await GenereQuestionsWithAi.mutate({ TexteUser });
+      await GenereQuestionsWithAi.mutate({ data });
     }
   };
 
@@ -50,7 +55,6 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     const data = GenereQuestionsWithAi.data?.choices[0].message.content;
     if (data) {
       updateQuizzData(JSON.parse(data));
-
       router.push("/quizz/game");
     }
   }
@@ -59,7 +63,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     <form
       onSubmit={async (e) => {
         await handleSubmit(e).then(async () => {
-          await decrementNumberAction();
+          // await decrementNumberAction();s
         });
       }}
     >
