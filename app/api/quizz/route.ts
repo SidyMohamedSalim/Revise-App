@@ -27,8 +27,7 @@ export async function POST(req: Request) {
     });
 
     console.log(data);
-
-    return Response.json({ data });
+    return new NextResponse(JSON.stringify(data));
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

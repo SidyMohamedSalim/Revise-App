@@ -2,36 +2,42 @@
 
 import React, { FormEvent, useState } from "react";
 import { TextArea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { ChatCompletionMessageParam } from "openai/resources";
+import { Button, buttonVariants } from "../ui/button";
+import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 import { useMutation } from "@tanstack/react-query";
 import { QuizQuestion } from "@/lib/data";
 import { useRouter } from "next/navigation";
-import { UseQUizzStore } from "@/src/zustand/store";
 import clsx from "clsx";
 import { decrementNumberAction } from "@/app/actions/quizz.action";
+import { UseQUizzStore } from "@/src/zustand/store";
+import { client } from "@/lib/client";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   const maxLength = 6000;
   const [textAreaCount, setTextAreaCount] = useState(0);
 
-  const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
   const router = useRouter();
 
-  const GenereQuestionsWithAi = useMutation({
-    mutationFn: ({ data }: { data: ChatCompletionMessageParam }) => {
-      return fetch("/api/quizz/", {
+  const GenerateQuestionsWithAi = useMutation({
+    mutationFn: async ({ data }: { data: ChatCompletionMessageParam }) => {
+      return await client<ChatCompletion>("/api/quizz/", {
         method: "POST",
-        body: JSON.stringify(data),
-      }).then((res) => res.json());
+        data,
+      });
     },
-    onSuccess: async (response) => {
-      const data = response.choices[0].message.content;
-      if (data) {
-        const parseData: QuizQuestion[] = JSON.parse(data);
-        updateQuizzData(parseData);
+    onSuccess(data, variables, context) {
+      const el = data.choices[0].message.content;
+      if (el) {
+        console.log(data);
+        const parseData: QuizQuestion[] = JSON.parse(el);
+        localStorage.setItem("responseDataAi", JSON.stringify(parseData));
       }
       router.refresh();
+    },
+    onError(error, variables, context) {
+      console.log("Something wrong");
     },
   });
 
@@ -39,48 +45,52 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const user = String(formData.get("user"));
+    const textValue = String(formData.get("user"));
 
-    const data = {
+    const data: ChatCompletionMessageParam = {
       role: "user",
-      content: `${user}`,
-    } satisfies ChatCompletionMessageParam;
+      content: textValue,
+    };
 
     if (countMax > 0) {
-      await GenereQuestionsWithAi.mutate({ data });
+      GenerateQuestionsWithAi.mutate({ data });
     }
   };
-
-  if (GenereQuestionsWithAi.status === "success") {
-    const data = GenereQuestionsWithAi.data?.choices[0].message.content;
-    if (data) {
-      updateQuizzData(JSON.parse(data));
-      router.push("/quizz/game");
-    }
-  }
 
   return (
     <form
       onSubmit={async (e) => {
         await handleSubmit(e).then(async () => {
-          // await decrementNumberAction();s
+          await decrementNumberAction();
         });
       }}
     >
       <h3 className="py-4 font-bold text-lg">
-        Generer un examen à partir d&apos;un texte donné
+        Générer un examen à partir d&apos;un texte donné
       </h3>
 
-      {countMax <= 0 && !GenereQuestionsWithAi.isPending && (
+      {countMax <= 0 && !GenerateQuestionsWithAi.isPending && (
         <p className="text-red-500 font-bold">
-          Les nombres de possiblités sont terminés !!
+          Les possibilités sont épuisées !!
         </p>
       )}
 
-      {GenereQuestionsWithAi.isPending ? (
+      {GenerateQuestionsWithAi.isSuccess ? (
         <div className="w-full flex justify-center items-center h-36">
           <div className="flex flex-col justify-center items-center">
-            <p>Le systeme est entrain de generer...</p>
+            <p className="text-green-500">Terminé</p>
+            <Link
+              href={"/quizz/game"}
+              className={cn(buttonVariants({ variant: "success" }))}
+            >
+              Commencer
+            </Link>
+          </div>
+        </div>
+      ) : GenerateQuestionsWithAi.isPending ? (
+        <div className="w-full flex justify-center items-center h-36">
+          <div className="flex flex-col justify-center items-center">
+            <p>Le système est en train de générer...</p>
             <span className="loading loading-infinity loading-lg"></span>
           </div>
         </div>
@@ -107,11 +117,13 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
             </p>
           </div>
           <Button
-            disabled={textAreaCount > maxLength || countMax <= 0}
+            disabled={
+              textAreaCount > maxLength || countMax <= 0 || textAreaCount < 20
+            }
             className="bg-green-500"
             type="submit"
           >
-            Generer
+            Générer
           </Button>
         </fieldset>
       )}

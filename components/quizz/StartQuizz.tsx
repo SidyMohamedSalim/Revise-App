@@ -15,8 +15,14 @@ export type QuizzProgressType = {
 
 const StartQuizz = () => {
   const router = useRouter();
-  const questions = UseQUizzStore((state) => state.data);
+  const updateQuizData = UseQUizzStore((state) => state.updateQuizzData);
+  const dataLocalStorage = localStorage.getItem("responseDataAi");
 
+  if (dataLocalStorage) {
+    updateQuizData(JSON.parse(dataLocalStorage));
+  }
+
+  const questions = UseQUizzStore((state) => state.data);
   if (!questions) {
     router.push("/quizz");
   }
