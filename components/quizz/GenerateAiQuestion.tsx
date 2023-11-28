@@ -32,12 +32,24 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
       if (el) {
         console.log(data);
         const parseData: QuizQuestion[] = JSON.parse(el);
-        localStorage.setItem("responseDataAi", JSON.stringify(parseData));
+        window.localStorage.setItem(
+          "responseDataAi",
+          JSON.stringify(parseData)
+        );
       }
+      <div className="toast toast-top toast-center">
+        <div className="alert alert-success">
+          <span>Operation Reussie.</span>
+        </div>
+      </div>;
       router.refresh();
     },
     onError(error, variables, context) {
-      console.log("Something wrong");
+      <div className="toast toast-top toast-center">
+        <div className="alert alert-danger bg-red-500">
+          <span>Error lors de la generation.</span>
+        </div>
+      </div>;
     },
   });
 

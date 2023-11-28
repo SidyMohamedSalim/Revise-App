@@ -16,7 +16,7 @@ export type QuizzProgressType = {
 const StartQuizz = () => {
   const router = useRouter();
   const updateQuizData = UseQUizzStore((state) => state.updateQuizzData);
-  const dataLocalStorage = localStorage.getItem("responseDataAi");
+  const dataLocalStorage = window.localStorage.getItem("responseDataAi");
 
   if (dataLocalStorage) {
     updateQuizData(JSON.parse(dataLocalStorage));
