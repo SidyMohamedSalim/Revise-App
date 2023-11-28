@@ -2,6 +2,9 @@ import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { env } from "@/src/env";
 import { NextResponse } from "next/server";
+import { OpenAIStream, StreamingTextResponse } from "ai";
+
+export const runtime = "edge";
 
 export async function POST(req: Request) {
   try {
@@ -10,8 +13,6 @@ export async function POST(req: Request) {
     });
     const body = await req.json();
     const bodyParse: ChatCompletionMessageParam = body;
-
-    console.log("aller....");
 
     const data = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -26,14 +27,8 @@ export async function POST(req: Request) {
       max_tokens: 1000,
     });
 
-    console.log(data);
     return new NextResponse(JSON.stringify(data), {
       status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
     });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
