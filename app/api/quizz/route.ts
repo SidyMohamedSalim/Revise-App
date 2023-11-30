@@ -2,12 +2,18 @@ import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { env } from "@/src/env";
 import { NextResponse } from "next/server";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { getAuthSession } from "@/lib/authConfig";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export async function POST(req: Request) {
   try {
+    const session = await getAuthSession();
+
+    if (!session?.user.id) {
+      return NextResponse.json({ error: "User Not Found ! " }, { status: 404 });
+    }
+
     const openai = new OpenAI({
       apiKey: env.OPENAI_KEY,
     });

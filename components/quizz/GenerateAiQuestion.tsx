@@ -9,7 +9,6 @@ import { QuizQuestion } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { decrementNumberAction } from "@/app/actions/quizz.action";
-import { UseQUizzStore } from "@/src/zustand/store";
 import { client } from "@/lib/client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
