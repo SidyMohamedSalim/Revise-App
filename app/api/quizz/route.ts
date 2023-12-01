@@ -4,6 +4,7 @@ import { env } from "@/src/env";
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/authConfig";
 import prisma from "@/lib/prisma";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 
 export async function POST(req: Request) {
   try {
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
 
     const data = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
+      stream: false,
       messages: [
         {
           role: "system",
@@ -53,6 +55,8 @@ export async function POST(req: Request) {
         },
       });
     }
+
+    console.log(data);
 
     return new NextResponse(JSON.stringify(data), {
       status: 200,
