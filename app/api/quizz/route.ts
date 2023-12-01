@@ -4,7 +4,9 @@ import { env } from "@/src/env";
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/authConfig";
 import prisma from "@/lib/prisma";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
