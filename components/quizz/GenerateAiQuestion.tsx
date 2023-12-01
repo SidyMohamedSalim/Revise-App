@@ -8,7 +8,6 @@ import { useMutation } from "@tanstack/react-query";
 import { QuizQuestion } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { decrementNumberAction } from "@/app/actions/quizz.action";
 import { client } from "@/lib/client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -71,9 +70,7 @@ const GenerateAiQuestions = ({ countMax }: { countMax: number }) => {
   return (
     <form
       onSubmit={async (e) => {
-        await handleSubmit(e).then(async () => {
-          await decrementNumberAction();
-        });
+        await handleSubmit(e);
       }}
     >
       <h3 className="py-4 font-bold text-lg">

@@ -3,8 +3,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 import { env } from "@/src/env";
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/authConfig";
-
-// export const runtime = "edge";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -32,6 +31,28 @@ export async function POST(req: Request) {
       temperature: 0.2,
       max_tokens: 1000,
     });
+
+    if (data) {
+      const getCountMax = await prisma.user.findUniqueOrThrow({
+        where: { id: session.user.id },
+        select: { usageMax: true },
+      });
+
+      const countMax = getCountMax?.usageMax;
+
+      if (!countMax) {
+        throw new Error("error data");
+      }
+
+      await prisma.user.update({
+        where: {
+          id: session.user.id,
+        },
+        data: {
+          usageMax: countMax <= 0 ? 0 : countMax - 1,
+        },
+      });
+    }
 
     return new NextResponse(JSON.stringify(data), {
       status: 200,
